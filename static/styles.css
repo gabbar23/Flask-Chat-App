@@ -3,7 +3,16 @@ body {
 }
 
 .login {
+    margin-top: 10%;
     display: flex;
     justify-content: center;
 
+}
+
+.row {
+
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }
