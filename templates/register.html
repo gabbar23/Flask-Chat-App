@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class='row login'>
+        <div class="col-lg-4 ">
+            <form action="{{url_for('register')}}" method="POST">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+                <div>
+                    <label for="exampleInputEmail1" class="form-label">Username</label>
+                    <input type="text" name='username' class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp" placeholder="Same name will be used for display while chatting"
+                        required>
+
+                </div><br>
+                <div>
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input type="password" name='password' class="form-control" id="exampleInputPassword1" required>
+                </div>
+                <br>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" type="submit">Register</button>
+                </div>
+                <br>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-primary" href="{{url_for('login')}}">Account Already Exist? Login Now!</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
