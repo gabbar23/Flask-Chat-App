@@ -1,11 +1,11 @@
 from enum import unique
 from flask import Flask,render_template,redirect,request,flash,session
-from flask_socketio import join_room,leave_room,emit, namespace
+from flask_session import Session
+from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask.helpers import url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager,UserMixin,login_required,logout_user,login_user,current_user
 from urllib.parse import urlparse, urljoin
-import socketio
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -13,7 +13,11 @@ app=Flask(__name__)
 app.config["SECRET_KEY"]="SECRET"
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///user_data.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
+app.config["SESSION_TYPE"]='filesystem'
 
+
+Session(app)
+socketio = SocketIO(app, manage_session=False)
 
 loginmanager=LoginManager()
 loginmanager.init_app(app)
@@ -110,23 +114,24 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# @socketio.on('join',namespace='/chat')
-# def join(message):
-#     room=session.get('room')
-#     join_room(room)
-#     emit('status',{'msg':session.get('username')+ 'has entered the chat'},room=room)
+@socketio.on('join',namespace='/chat')
+def join(message):
+    room=session.get('room')
+    join_room(room)
+    emit('status',{'msg':session.get('username')+ 'has entered the chat'},room=room)
 
-# @socketio.on('text',namespace='/chat')
-# def text(message):
-#     room=session.get('room')
-#     emit('message',{'msg':session.get('username')+ ':'+ message['msg']},room=room)
+@socketio.on('text',namespace='/chat')
+def text(message):
+    room=session.get('room')
+    emit('message',{'msg':session.get('username')+ ':'+ message['msg']},room=room)
 
-# @socketio.on('leave',namespace='/chat')
-# def leave(message):
-#     room=session.get('room')
-#     username=session.get('username')
-#     leave_room(room)
-#     session.clear()
-#     emit('status',{'msg':username + 'has left the chat'},room=room)
+@socketio.on('leave',namespace='/chat')
+def leave(message):
+    room=session.get('room')
+    username=session.get('username')
+    leave_room(room)
+    session.clear()
+    emit('status',{'msg':username + 'has left the chat'},room=room)
+
 if __name__=="__main__":
-    app.run()
+    socketio.run(app)
