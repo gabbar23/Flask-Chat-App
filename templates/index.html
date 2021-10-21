@@ -8,7 +8,15 @@
             </center>
             <br>
             <form action="{{url_for('chat')}}" , method="POST">
-
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
                 <div>
                     <label for="exampleInputEmail1" class="form-label">Room ID</label>
                     <input type="text" name="room_id" class="form-control" id="exampleInputEmail1"
@@ -21,7 +29,7 @@
                 </div>
                 <br>
                 <div class="gap-2">
-                    <a class="btn btn-outline-dark" href="">Create Room</a>
+                    <a class="btn btn-outline-dark" href="{{url_for('chat',a='True')}}">Create Room</a>
                     <a class="btn btn-danger" type="submit" href="{{url_for('logout')}}">Logout</a>
                 </div>
                 <br>

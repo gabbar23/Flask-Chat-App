@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\amans\Documents\Coding\Web Dev Projects\Flask-Chat-App\venv"
+VIRTUAL_ENV="D:\Study\Web Dev Projects\Flask-Chat-App\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
