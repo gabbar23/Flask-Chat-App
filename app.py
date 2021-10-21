@@ -1,9 +1,11 @@
 from enum import unique
-from flask import Flask,render_template,redirect,request,flash
+from flask import Flask,render_template,redirect,request,flash,session
+from flask_socketio import join_room,leave_room,emit, namespace
 from flask.helpers import url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager,UserMixin,login_required,logout_user,login_user,current_user
 from urllib.parse import urlparse, urljoin
+import socketio
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -88,6 +90,19 @@ def register():
         return redirect(url_for('index'))
     return render_template("register.html")
 
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if(request.method=='POST'):
+        room = request.form['room_id']
+        #Store the data in session
+        session['username'] = current_user.username
+        session['room'] = room
+        return render_template('chat.html', session = session)
+    else:
+        if(session.get('username') is not None):
+            return render_template('chat.html', session = session)
+        else:
+            return redirect(url_for('index'))
 
 @app.route('/logout')
 @login_required
@@ -95,5 +110,23 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+# @socketio.on('join',namespace='/chat')
+# def join(message):
+#     room=session.get('room')
+#     join_room(room)
+#     emit('status',{'msg':session.get('username')+ 'has entered the chat'},room=room)
+
+# @socketio.on('text',namespace='/chat')
+# def text(message):
+#     room=session.get('room')
+#     emit('message',{'msg':session.get('username')+ ':'+ message['msg']},room=room)
+
+# @socketio.on('leave',namespace='/chat')
+# def leave(message):
+#     room=session.get('room')
+#     username=session.get('username')
+#     leave_room(room)
+#     session.clear()
+#     emit('status',{'msg':username + 'has left the chat'},room=room)
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run()

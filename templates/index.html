@@ -7,12 +7,12 @@
                 <h1>Welcome {{ current_user.username}}</h1>
             </center>
             <br>
-            <form action="{{url_for('login')}}">
+            <form action="{{url_for('chat')}}" , method="POST">
 
                 <div>
                     <label for="exampleInputEmail1" class="form-label">Room ID</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        required>
+                    <input type="text" name="room_id" class="form-control" id="exampleInputEmail1"
+                        aria-describedby="emailHelp" required>
 
                 </div><br>
 
