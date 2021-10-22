@@ -8,15 +8,22 @@ from flask_login import LoginManager,UserMixin,login_required,logout_user,login_
 from urllib.parse import urlparse, urljoin
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
+import os
 
 
 app=Flask(__name__)
-app.config["SECRET_KEY"]="SECRET"
-app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///user_data.db"
+app.config["SECRET_KEY"]=os.environ.get("SECRET_KEY")
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 app.config["SESSION_TYPE"]='filesystem'
 
 
+uri =  os.environ.get("DATABASE_URL")
+if uri:
+    if uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = uri or "sqlite:///user_data.db"
 
 Session(app)
 socketio = SocketIO(app, manage_session=False)
@@ -131,7 +138,6 @@ def register():
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if request.args.get('a')=="True":
-        print("hi")
         session['username'] = current_user.username
         a=True
         while a:
