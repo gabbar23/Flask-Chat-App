@@ -65,7 +65,7 @@ db=SQLAlchemy(app)
 class Users(UserMixin,db.Model):
     id=db.Column(db.Integer,primary_key=True)
     username=db.Column(db.String(10),unique=True)
-    password=db.Column(db.String(20))
+    password=db.Column(db.String(100))
 
 
 class Rooms(db.Model):
